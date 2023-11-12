@@ -1,20 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import React from "react";
+import { TouchableOpacity } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { Provider as PaperProvider } from "react-native-paper";
+import HomeScreen from "./screens/HomeScreen";
+import AddNoteScreen from "./screens/AddNoteScreen";
+import AddIcon from "./assets/add-icon";
 
-export default function App() {
+const Stack = createStackNavigator();
+const App = () => {
+
+  const categories = [
+    { id: 1, name: "Goal Evidence" },
+    { id: 2, name: "Support Coordination" },
+    { id: 3, name: "Active Duty" },
+  ];
+
+  const clients = [
+    { id: 1, name: "Client 1" },
+    { id: 2, name: "Client 2" },
+    // Add more clients as needed
+  ];
+  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+    <PaperProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+          <Stack.Screen name="Home" options={({navigation})=>({ title: "Notes", headerRight: () => (
+            <TouchableOpacity
+            onPress={() => navigation.navigate("AddNote")}
+            style={{ marginBottom: 40 }}
+          >
+            <AddIcon/>
+          </TouchableOpacity>
+          ), })} >
+            {(props) => <HomeScreen {...props}  />}
+          </Stack.Screen>
+          <Stack.Screen name="AddNote" options={{ title: "Add Note" }}>
+            {(props) => (
+              <AddNoteScreen
+                {...props}
+                categories={categories}
+                clients={clients}
+              />
+            )}
+          </Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
+  );
+};
+
+export default App;
